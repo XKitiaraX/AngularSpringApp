@@ -16,7 +16,8 @@ export class ClientesComponent implements OnInit {
   constructor(private clienteService: ClienteService) { }
 
   ngOnInit(): void {
-    this.cargarClientes();
+    // this.cargarClientes();
+    this.cargarClientesPaginados();
   }
 
   delete(cliente: ClienteInterface): void {
@@ -38,7 +39,8 @@ export class ClientesComponent implements OnInit {
             `Cliente ${cliente.nombre} eliminado`,
             'success'
           );
-          this.cargarClientes();
+          // this.cargarClientes();
+          this.cargarClientesPaginados();
         })
       }
     })
@@ -48,6 +50,15 @@ export class ClientesComponent implements OnInit {
     this.clienteService.getClientes().subscribe(
       clientes => {
         this.clientes = clientes;
+      }
+    );
+  }
+
+  cargarClientesPaginados(): void {
+    let page: number = 0;
+    this.clienteService.getClientesPaginados(page).subscribe(
+      res => {
+        this.clientes = res.content as ClienteInterface[];
       }
     );
   }

@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 // import {CLIENTES} from './clientes.json';
-import {ClienteInterface, RespuestaInterface} from './cliente.interface';
+import {ClienteInterface, PaginaClientes, RespuestaInterface} from './cliente.interface';
 import {Observable, of, throwError} from 'rxjs';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
-import {catchError} from 'rxjs/operators';
+import {catchError, map, tap} from 'rxjs/operators';
 import swal from 'sweetalert2';
 import {Router} from '@angular/router';
 
@@ -21,6 +21,19 @@ export class ClienteService {
   getClientes(): Observable<ClienteInterface[]> {
     // return of(CLIENTES);
     return this.http.get<ClienteInterface[]>(this.urlEndPoint);
+  }
+
+  getClientesPaginados(page: number): Observable<PaginaClientes> {
+    return this.http.get(this.urlEndPoint + `/page/${page}`).pipe(
+      // tap((res: PaginaClientes) => {
+      //  (res.content as ClienteInterface[]).forEach(cliente => {
+      //    console.log(cliente.nombre);
+      //  });
+      // }),
+      map(res => {
+        return res as PaginaClientes;
+      })
+    )
   }
 
   create(cliente: ClienteInterface): Observable<RespuestaInterface> {
