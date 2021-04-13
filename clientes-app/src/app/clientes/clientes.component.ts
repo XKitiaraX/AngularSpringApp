@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {ClienteInterface} from './cliente.interface';
 import {ClienteService} from './cliente.service';
+import swal from 'sweetalert2'
 
 @Component({
   selector: 'app-clientes',
@@ -15,11 +16,34 @@ export class ClientesComponent implements OnInit {
   constructor(private clienteService: ClienteService) { }
 
   ngOnInit(): void {
-    this.clienteService.gerClientes().subscribe(
+    this.clienteService.getClientes().subscribe(
       clientes => {
         this.clientes = clientes;
       }
     );
   }
 
+  delete(cliente: ClienteInterface): void {
+
+    swal.fire({
+      title: '¿Seguro?',
+      text: `¿Seguro que desea eliminar al cliente ${cliente.nombre} ${cliente.apellido}?`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sí, eliminar',
+      cancelButtonText: 'No, cancelar',
+      reverseButtons: true
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.clienteService.delete(cliente.id).subscribe(response => {
+          // this.clientes.filter(cli => cli !== cliente)
+          swal.fire(
+            'Cliente eliminado',
+            `Cliente ${cliente.nombre} eliminado`,
+            'success'
+          );
+        })
+      }
+    })
+  }
 }
