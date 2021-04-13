@@ -22,6 +22,8 @@ export class FormComponent implements OnInit {
     createAt: ''
   }
 
+  errores!: string[];
+
   constructor(private clienteService: ClienteService,
               private router: Router,
               private activatedRoute: ActivatedRoute) { }
@@ -34,8 +36,8 @@ export class FormComponent implements OnInit {
     this.activatedRoute.params.subscribe(params => {
       let id = params['id'];
       if (id) {
-        this.clienteService.getCliente(id).subscribe(cliente => {
-          this.cliente = cliente;
+        this.clienteService.getCliente(id).subscribe(res => {
+          this.cliente = res.cliente;
         })
       }
     })
@@ -45,16 +47,26 @@ export class FormComponent implements OnInit {
     this.clienteService.create(this.cliente).subscribe(
       res => {
         this.router.navigate(['/clientes']);
-        swal.fire('Nuevo cliente', `Cliente ${res.nombre} creado con éxito`, 'success')
+        swal.fire('Nuevo cliente', `${res.mensaje}: ${res.cliente.nombre}`, 'success')
+      },
+      err => {
+        this.errores = err.error.errors as string[];
+        console.error('Status: ' + err.status);
+        console.error(err.error.errors);
       }
     );
   }
 
   public update(): void {
-    this.clienteService.update(this.cliente).subscribe( cliente => {
+    this.clienteService.update(this.cliente).subscribe( res => {
       this.router.navigate(['/clientes']);
-      swal.fire('Cliente actualizado', `Cliente ${cliente.nombre} creado con éxito`, 'success')
-    })
+      swal.fire('res.mensaje', `${res.mensaje}: ${res.cliente.nombre}`, 'success')
+    },
+      err => {
+        this.errores = err.error.errors as string[];
+        console.error('Status: ' + err.status);
+        console.error(err.error.errors);
+    });
   }
 
 

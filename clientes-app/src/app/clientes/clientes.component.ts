@@ -16,11 +16,7 @@ export class ClientesComponent implements OnInit {
   constructor(private clienteService: ClienteService) { }
 
   ngOnInit(): void {
-    this.clienteService.getClientes().subscribe(
-      clientes => {
-        this.clientes = clientes;
-      }
-    );
+    this.cargarClientes();
   }
 
   delete(cliente: ClienteInterface): void {
@@ -42,8 +38,17 @@ export class ClientesComponent implements OnInit {
             `Cliente ${cliente.nombre} eliminado`,
             'success'
           );
+          this.cargarClientes();
         })
       }
     })
+  }
+
+  cargarClientes(): void {
+    this.clienteService.getClientes().subscribe(
+      clientes => {
+        this.clientes = clientes;
+      }
+    );
   }
 }

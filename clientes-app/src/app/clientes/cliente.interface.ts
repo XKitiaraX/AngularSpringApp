@@ -5,3 +5,8 @@ export interface ClienteInterface {
   createAt: string;
   email: string;
 }
+
+export interface RespuestaInterface {
+  mensaje: string;
+  cliente: ClienteInterface;
+}
